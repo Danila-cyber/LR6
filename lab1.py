@@ -30,7 +30,6 @@ def locateIterTools(summ, countDepos):
 
 summa = int(input("Какая сумма будет на вкладах: "))
 countDeposits = int(input("Сколько вкладов будет: "))
-limit = int(summa * 0.25)
 
 choice = input("Какой функцией выводить ответ? 1 : Алгоритмический 2 : Itertools\n- ")
 if choice == '1':
