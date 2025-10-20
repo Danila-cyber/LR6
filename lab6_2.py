@@ -6,7 +6,7 @@
 # Ограничение: все вклады должны быть кратны 2 (чётные) -> уменьшает переборы
 '''
 import timeit
-from itertools import combinations_with_replacement
+from itertools import combinations
 
 # Целевая функция: минимизируем разброс вкладов (сумму отклонений от среднего)
 def objective(arr):
@@ -24,10 +24,26 @@ def splitSumAlgoritm(summa, count, limit, prefix=[]):
         for i in range(min_val, max_val+1, limit):
             yield from splitSumAlgoritm(summa - i, count - 1, limit, prefix + [i])
 
-def splitSumIterTools(summa, count, limit):
-    candidates = [x for x in range(0, summa + 1, limit)]
-    variants_func = [comb for comb in combinations_with_replacement(candidates, count) if sum(comb) == summa]
-    return variants_func
+
+def splitSumIterTools(S, K):
+    # Проверяем, что сумма S чётная и не меньше 0
+    if S % 2 != 0 or S < 0:
+        return []
+    half_S = S // 2
+
+    # Генерируем разбиения half_S на K неотрицательных частей (звёзды и палочки)
+    # Каждая часть соответствует половине вклада (т.к. вклады четные)
+    results = []
+    for divs in combinations(range(half_S + K - 1), K - 1):
+        parts = []
+        prev = -1
+        for d in divs:
+            parts.append(d - prev - 1)
+            prev = d
+        parts.append(half_S + K - 1 - prev - 1)
+        # Умножаем части на 2, чтобы получить четные вклады
+        results.append([p * 2 for p in parts])
+    return results
 
 summa = int(input("Какая сумма будет на вкладах: "))
 countDeposits = int(input("Сколько вкладов будет: "))
@@ -44,8 +60,8 @@ if choice == '1':
     for var in variants_alg:
         print(var)
 elif choice == '2':
-    variants_func = splitSumIterTools(summa, countDeposits, limit)
-    t_func = timeit.timeit(lambda: splitSumIterTools(summa, countDeposits, limit), number=1)
+    variants_func = splitSumIterTools(summa, countDeposits)
+    t_func = timeit.timeit(lambda: splitSumIterTools(summa, countDeposits), number=1)
     best_func = min(variants_func, key=objective) if variants_func else None
     print(f"Число вариантов (itertools): {len(variants_func)}")
     print(f"Лучшее распределение (itertools): {best_func} с отклонением {objective(best_func):.2f}")
