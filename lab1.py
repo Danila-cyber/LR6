@@ -1,5 +1,5 @@
 '''
-Задание состоит из двух частей. 
+Задание состоит из двух частей.
 1 часть – написать программу в соответствии со своим вариантом задания. Написать 2 варианта формирования (алгоритмический и с помощью функций Питона), сравнив по времени их выполнение.
 2 часть – усложнить написанную программу, введя по своему усмотрению в условие минимум одно ограничение на характеристики объектов (которое будет сокращать количество переборов)  и целевую функцию для нахождения оптимального  решения.
 Вариант 20: Имеется некоторая сумма денег. Сформируйте разные варианты ее размещения в банке на К разных вкладах.
@@ -8,14 +8,14 @@ import timeit
 from itertools import product
 
 # Алгоритмический вариант
-def splitSumAlgoritm(summa, count, prefix=[]):
-    if count == 1:
-        yield prefix + [summa]
+def splitSumAlgoritm(S, K, prefix=[]):
+    if K == 1:
+        yield prefix + [S]
     else:
-        for i in range(summa + 1):
-            yield from splitSumIterTools(summa - i, count - 1, prefix + [i])
+        for i in range(S+1):
+            yield from splitSumAlgoritm(S - i, K - 1, prefix + [i])
 
-def splitSumIterTools(summa, count, limit):
+def splitSumIterTools(summa, count):
     all_combinations = product(range(summa + 1), repeat=count)
     variants_func = [comb for comb in all_combinations if sum(comb) == summa]
     return variants_func
